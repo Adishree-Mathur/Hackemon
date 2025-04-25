@@ -10,13 +10,19 @@ from deep_translator import GoogleTranslator
 import random
 from flask_migrate import Migrate
 from models import Doctor
+import logging
+import sys
 
 
 load_dotenv()
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY') or 'development-key'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///shewell.db'
+database_url = os.environ.get('DATABASE_URL', 'sqlite:///shewell.db')
+if database_url.startswith("postgres://"):
+    database_url = database_url.replace("postgres://", "postgresql://", 1)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
@@ -31,6 +37,9 @@ else:
 
 genai.configure(api_key='your_api_key_here')  # Replace with your API key
 gemini_model = genai.GenerativeModel('gemini-2.0-flash')
+
+# Add after app initialization
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 def login_required(user_type=None):
     if 'user_id' not in session:
@@ -47,22 +56,34 @@ def home():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    if request.method == 'POST':
-        email = request.form.get('email')
-        password = request.form.get('password')
-        user_type = request.form.get('user_type')
+    try:
+        if request.method == 'POST':
+            email = request.form.get('email')
+            password = request.form.get('password')
+            user_type = request.form.get('user_type')
 
-        user = User.query.filter_by(email=email).first() if user_type == 'patient' else Doctor.query.filter_by(email=email).first()
-        
-        if user and user.check_password(password):
-            session['user_id'] = user.id
-            session['user_type'] = user_type
-            session['name'] = user.name  # Store name in session
-            flash('Login successful!', 'success')
-            return redirect(url_for('dashboard'))
+            app.logger.info(f"Login attempt for email: {email}, user_type: {user_type}")
 
-        flash('Invalid email or password', 'error')
-    return render_template('login.html')
+            if user_type == 'patient':
+                user = User.query.filter_by(email=email).first()
+            else:
+                user = Doctor.query.filter_by(email=email).first()
+            
+            if user and user.check_password(password):
+                session['user_id'] = user.id
+                session['user_type'] = user_type
+                session['name'] = user.name
+                app.logger.info(f"Login successful for user: {email}")
+                flash('Login successful!', 'success')
+                return redirect(url_for('dashboard'))
+
+            app.logger.warning(f"Login failed for user: {email}")
+            flash('Invalid email or password', 'error')
+        return render_template('login.html')
+    except Exception as e:
+        app.logger.error(f"Login error: {str(e)}")
+        flash('An error occurred during login. Please try again.', 'error')
+        return render_template('login.html')
 
 @app.route('/register')
 def register():
@@ -317,7 +338,22 @@ def add_doctor():
 
     return render_template('admin_add_doctor.html')
 
+# Add these error handlers after all routes
+@app.errorhandler(500)
+def internal_error(error):
+    app.logger.error(f'Server Error: {error}')
+    return render_template('error.html', error_code=500, message="Internal Server Error"), 500
+
+@app.errorhandler(404)
+def not_found_error(error):
+    return render_template('error.html', error_code=404, message="Page Not Found"), 404
+
+# Modify the main block to ensure proper database initialization
 if __name__ == '__main__':
     with app.app_context():
-        db.create_all()
+        try:
+            db.create_all()
+            app.logger.info("Database tables created successfully")
+        except Exception as e:
+            app.logger.error(f"Error creating database tables: {str(e)}")
     app.run(debug=True)
