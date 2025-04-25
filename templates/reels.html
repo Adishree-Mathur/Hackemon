@@ -1,0 +1,56 @@
+<!-- reels.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Wellness Reels</title>
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+      color: white;
+      font-family: Arial, sans-serif;
+      overflow-x: hidden;
+    }
+    .reel-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      padding: 20px;
+    }
+    .reel {
+      width: 100%;
+      max-width: 360px;
+      aspect-ratio: 9 / 16;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(255,255,255,0.1);
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="reel-container">
+    <div class="reel">
+      <iframe src="https://www.youtube.com/embed/jgowUAU1g5E" allowfullscreen></iframe>
+    </div>
+    <div class="reel">
+      <iframe src="https://www.youtube.com/embed/UeXyFW76UsY" allowfullscreen></iframe>
+    </div>
+    <div class="reel">
+      <iframe src="https://www.youtube.com/embed/34lWQwoYddw" allowfullscreen></iframe>
+    </div>
+    <div class="reel">
+      <iframe src="https://www.youtube.com/embed/yrT-2RG8oRc" allowfullscreen></iframe>
+    </div>
+    <div class="reel">
+      <iframe src="https://www.youtube.com/embed/7MFtoMwL-t8" allowfullscreen></iframe>
+    </div>
+  </div>
+</body>
+</html>

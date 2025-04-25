@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Hero section -->
+<section class="flex flex-col md:flex-row items-center gap-12 py-12">
+    <div class="md:w-1/2">
+        <h1 class="text-4xl md:text-5xl font-montserrat font-bold leading-tight mb-6">
+            Your Pregnancy Journey, <br>Made Easier
+        </h1>
+        <p class="text-lg text-gray-600 mb-8">
+            Connect with top gynecologists and get instant answers to your pregnancy questions with our AI chatbot.
+        </p>
+        <div class="flex flex-wrap gap-4">
+            <a href="{{ url_for('doctors') if session.get('user_id') else url_for('register') }}"
+                class="px-6 py-3 rounded-full bg-accent text-white font-semibold hover:bg-opacity-80 transition">
+                Book an Appointment
+            </a>
+            <a href="{{ url_for('chatbot') if session.get('user_id') else url_for('register') }}"
+                class="px-6 py-3 rounded-full bg-primary text-white font-semibold hover:bg-opacity-80 transition">
+                Chat with AI
+            </a>
+        </div>
+    </div>
+    <div class="md:w-1/2 bg-secondary rounded-3xl overflow-hidden h-64 md:h-96">
+        <!-- Placeholder image -->
+        <img src="{{ url_for('static', filename='images/banner.png') }}" alt="Banner Image"
+            class="w-full h-full object-cover">
+    </div>
+</section>
+
+<!-- Features section -->
+<section class="py-16 text-center">
+    <h2 class="text-3xl font-montserrat font-bold mb-12">How SheWell Helps You</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Feature 1 -->
+        <div class="bg-white rounded-3xl p-8 shadow-md hover:-translate-y-2 transition duration-300">
+            <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-6">
+                <span class="text-2xl">🩺</span>
+            </div>
+            <h3 class="text-xl font-montserrat font-semibold text-primary mb-4">Doctor Consultations</h3>
+            <p>Book appointments with experienced gynecologists specializing in pregnancy care.</p>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="bg-white rounded-3xl p-8 shadow-md hover:-translate-y-2 transition duration-300">
+            <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-6">
+                <span class="text-2xl">💬</span>
+            </div>
+            <h3 class="text-xl font-montserrat font-semibold text-primary mb-4">AI Chatbot</h3>
+            <p>Get instant answers to your pregnancy questions from our AI assistant, anytime.</p>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="bg-white rounded-3xl p-8 shadow-md hover:-translate-y-2 transition duration-300">
+            <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-6">
+                <span class="text-2xl">📱</span>
+            </div>
+            <h3 class="text-xl font-montserrat font-semibold text-primary mb-4">SMS Reminders</h3>
+            <p>Never miss an appointment with timely SMS reminders for your doctor visits.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Chatbot button -->
+<div id="chatbot-button"
+    class="fixed bottom-8 right-8 w-14 h-14 bg-accent rounded-full flex items-center justify-center cursor-pointer shadow-lg z-50 transition-all duration-300">
+    <span class="text-2xl">💬</span>
+</div>
+
+<!-- Chatbot window (starts hidden) -->
+<div id="chatbot-window"
+    class="fixed bottom-8 right-8 w-80 h-96 bg-white rounded-2xl shadow-xl z-50 transition-all duration-300 scale-0 origin-bottom-right">
+    <div class="flex flex-col h-full p-4">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="font-montserrat font-semibold">SheWell Assistant</h3>
+            <button id="close-chat" class="text-gray-500 hover:text-gray-700">✕</button>
+        </div>
+        <div class="flex-1 bg-gray-100 rounded-lg p-3 mb-4 overflow-y-auto" id="chat-messages">
+            <div class="bg-primary text-white p-3 rounded-lg mb-3 max-w-[80%]">
+                Hi there! I'm your SheWell assistant. How can I help with your pregnancy questions today?
+            </div>
+        </div>
+        <div class="flex gap-2">
+            <input type="text" id="chat-input" placeholder="Type your question..."
+                class="flex-1 px-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary">
+            <button id="send-message"
+                class="bg-accent text-white w-10 h-10 rounded-full flex items-center justify-center">➤</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Chatbot UI toggle
+    const chatbotButton = document.getElementById('chatbot-button');
+    const chatbotWindow = document.getElementById('chatbot-window');
+    const closeChat = document.getElementById('close-chat');
+    const chatInput = document.getElementById('chat-input');
+    const sendMessage = document.getElementById('send-message');
+    const chatMessages = document.getElementById('chat-messages');
+
+    chatbotButton.addEventListener('click', () => {
+        chatbotWindow.classList.remove('scale-0');
+        chatbotWindow.classList.add('scale-100');
+        chatbotButton.classList.add('hidden');
+    });
+
+    closeChat.addEventListener('click', () => {
+        chatbotWindow.classList.remove('scale-100');
+        chatbotWindow.classList.add('scale-0');
+        setTimeout(() => {
+            chatbotButton.classList.remove('hidden');
+        }, 300);
+    });
+
+    // Simple chat function
+    async function addMessage(message, isUser) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = isUser
+            ? 'bg-gray-200 text-gray-800 p-3 rounded-lg mb-3 max-w-[80%] ml-auto'
+            : 'bg-primary text-white p-3 rounded-lg mb-3 max-w-[80%]';
+        messageDiv.textContent = message;
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    sendMessage.addEventListener('click', async () => {
+        const message = chatInput.value.trim();
+        if (message) {
+            addMessage(message, true);
+            chatInput.value = '';
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message, language: 'en' })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    addMessage(data.response || 'Sorry, I could not fetch a response.', false);
+                } else {
+                    addMessage('Error: Unable to fetch response from the server.', false);
+                }
+            } catch (error) {
+                addMessage('Error: Something went wrong while connecting to the server.', false);
+            }
+        }
+    });
+</script>
+{% endblock %}

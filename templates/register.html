@@ -1,0 +1,241 @@
+{% extends "base.html" %}
+
+{% block title %}Register - SheWell{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto my-12 bg-white p-8 rounded-xl shadow-md">
+    <h1 class="text-2xl font-bold text-center mb-6">Create an Account</h1>
+    
+    <div class="flex justify-center mb-6">
+        <div class="inline-flex rounded-md shadow-sm">
+            <button 
+                id="patient-tab" 
+                class="px-4 py-2 text-sm font-medium rounded-l-lg focus:outline-none focus:ring-2 focus:ring-primary bg-primary text-white"
+            >
+                Patient
+            </button>
+            <button 
+                id="doctor-tab" 
+                class="px-4 py-2 text-sm font-medium rounded-r-lg focus:outline-none focus:ring-2 focus:ring-primary bg-gray-200 text-gray-700 hover:bg-gray-300"
+            >
+                Doctor
+            </button>
+        </div>
+    </div>
+    
+    <!-- Patient Registration Form -->
+    <form method="POST" action="{{ url_for('register_patient') }}" id="patient-form" class="space-y-4">
+        <div class="form-group">
+            <label for="patient-name" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+            <input 
+                type="text" 
+                id="patient-name" 
+                name="name" 
+                required
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+            >
+        </div>
+        
+        <div class="form-group">
+            <label for="patient-email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+            <input 
+                type="email" 
+                id="patient-email" 
+                name="email" 
+                required
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+            >
+        </div>
+        
+        <div class="form-group">
+            <label for="patient-phone" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+            <input 
+                type="tel" 
+                id="patient-phone" 
+                name="phone" 
+                required
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+            >
+        </div>
+        
+        <div class="form-group">
+            <label for="patient-password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <input 
+                type="password" 
+                id="patient-password" 
+                name="password" 
+                required
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+            >
+        </div>
+        
+        <div class="form-group">
+            <label for="patient-language" class="block text-sm font-medium text-gray-700 mb-1">Preferred Language</label>
+            <select 
+                id="patient-language" 
+                name="preferred_language" 
+                required
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+            >
+                <option value="english">English</option>
+                <option value="hindi">Hindi</option>
+                <option value="bengali">Bengali</option>
+                <option value="tamil">Tamil</option>
+                <option value="telugu">Telugu</option>
+                <option value="marathi">Marathi</option>
+            </select>
+        </div>
+        
+        <button 
+            type="submit" 
+            class="w-full bg-primary hover:bg-primary-dark text-white font-semibold py-2 px-4 rounded-lg transition duration-200"
+        >
+            Register as Patient
+        </button>
+    </form>
+    
+    <!-- Doctor Registration Form -->
+    <form method="POST" action="{{ url_for('register_doctor') }}" id="doctor-form" class="space-y-4 hidden">
+        <div class="form-group">
+            <label for="doctor-name" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+            <input 
+                type="text" 
+                id="doctor-name" 
+                name="name" 
+                required
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+            >
+        </div>
+        
+        <div class="form-group">
+            <label for="doctor-email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+            <input 
+                type="email" 
+                id="doctor-email" 
+                name="email" 
+                required
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+            >
+        </div>
+        
+        <div class="form-group">
+            <label for="doctor-phone" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+            <input 
+                type="tel" 
+                id="doctor-phone" 
+                name="phone" 
+                required
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+            >
+        </div>
+        
+        <div class="form-group">
+            <label for="doctor-specialization" class="block text-sm font-medium text-gray-700 mb-1">Specialization</label>
+            <select 
+                id="doctor-specialization" 
+                name="specialization" 
+                required
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+            >
+                <option value="">Select Specialization</option>
+                <option value="Obstetrician">Obstetrician</option>
+                <option value="Gynecologist">Gynecologist</option>
+                <option value="Pediatrician">Pediatrician</option>
+                <option value="General Physician">General Physician</option>
+                <option value="Nutritionist">Nutritionist</option>
+                <option value="Psychologist">Psychologist</option>
+                <option value="Dermatologist">Dermatologist</option>
+                <option value="Endocrinologist">Endocrinologist</option>
+                <option value="Fertility Specialist">Fertility Specialist</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="doctor-experience" class="block text-sm font-medium text-gray-700 mb-1">Years of Experience</label>
+            <input 
+                type="number" 
+                id="doctor-experience" 
+                name="experience" 
+                min="0"
+                required
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+            >
+        </div>
+        
+        <div class="form-group">
+            <label for="doctor-password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <input 
+                type="password" 
+                id="doctor-password" 
+                name="password" 
+                required
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+            >
+        </div>
+        
+        <div class="form-group">
+            <label for="per-minute-price" class="block text-sm font-medium text-gray-700 mb-1">Per Minute Price (₹)</label>
+            <input 
+                type="number" 
+                id="per-minute-price" 
+                name="per_minute_price" 
+                step="0.01" 
+                min="0"
+                required
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+            >
+        </div>
+        
+        <button 
+            type="submit" 
+            class="w-full bg-primary hover:bg-primary-dark text-white font-semibold py-2 px-4 rounded-lg transition duration-200"
+        >
+            Register as Doctor
+        </button>
+    </form>
+    
+    <div class="text-center mt-4">
+        <p class="text-sm text-gray-600">
+            Already have an account? 
+            <a href="{{ url_for('login') }}" class="text-primary hover:text-primary-dark font-medium">Login here</a>
+        </p>
+    </div>
+</div>
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const patientTab = document.getElementById('patient-tab');
+        const doctorTab = document.getElementById('doctor-tab');
+        const patientForm = document.getElementById('patient-form');
+        const doctorForm = document.getElementById('doctor-form');
+        
+        function activatePatientTab() {
+            patientTab.classList.remove('bg-gray-200', 'text-gray-700');
+            patientTab.classList.add('bg-primary', 'text-white');
+            doctorTab.classList.remove('bg-primary', 'text-white');
+            doctorTab.classList.add('bg-gray-200', 'text-gray-700');
+            patientForm.classList.remove('hidden');
+            doctorForm.classList.add('hidden');
+        }
+        
+        function activateDoctorTab() {
+            doctorTab.classList.remove('bg-gray-200', 'text-gray-700');
+            doctorTab.classList.add('bg-primary', 'text-white');
+            patientTab.classList.remove('bg-primary', 'text-white');
+            patientTab.classList.add('bg-gray-200', 'text-gray-700');
+            doctorForm.classList.remove('hidden');
+            patientForm.classList.add('hidden');
+        }
+        
+        patientTab.addEventListener('click', activatePatientTab);
+        doctorTab.addEventListener('click', activateDoctorTab);
+        
+        // Initialize the form based on URL hash
+        if (window.location.hash === '#doctor') {
+            activateDoctorTab();
+        }
+    });
+</script>
+{% endblock %}
+{% endblock %}

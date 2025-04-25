@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+
+{% block title %}Periods Tracker & Health Guide - SheWell{% endblock %}
+
+{% block styles %}
+<style>
+    .tracker {
+        background-color: white;
+        border-radius: 1rem;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .health-tips {
+        background-color: white;
+        border-radius: 1rem;
+        padding: 2rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .tips-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+    }
+    
+    .tip {
+        flex: 1 1 300px;
+        border-radius: 0.75rem;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .tip img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+    }
+    
+    .tip h3, .tip p {
+        padding: 0.75rem 1rem;
+    }
+    
+    .tip h3 {
+        color: #b9a5cb;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 600;
+    }
+    
+    input[type="date"] {
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        border: 1px solid #e2e8f0;
+        margin-right: 0.5rem;
+    }
+    
+    button {
+        background-color: #ff8c69;
+        color: white;
+        border: none;
+        border-radius: 9999px;
+        padding: 0.5rem 1.5rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: opacity 0.3s;
+    }
+    
+    button:hover {
+        opacity: 0.8;
+    }
+    
+    #result {
+        margin-top: 1rem;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        background-color: #f8f9fa;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="py-8">
+    <header class="text-center mb-12">
+        <h1 class="text-4xl font-montserrat font-bold mb-4">Periods Tracker & Health Guide</h1>
+        <p class="text-lg text-gray-600">Track your cycle and stay informed about your health.</p>
+    </header>
+    
+    <section class="tracker">
+        <h2 class="text-2xl font-montserrat font-bold mb-6">Enter Your Last Period Date</h2>
+        <div class="flex flex-wrap items-center gap-4">
+            <input type="date" id="lastPeriod" required class="flex-grow md:flex-grow-0">
+            <button onclick="calculateNextPeriod()">Calculate Next Cycle</button>
+        </div>
+        <p id="result" class="mt-4"></p>
+    </section>
+
+ 
+<section class="bg-gradient-to-b from-[#fdf2f8] to-white py-12 px-4 sm:px-8 rounded-2xl shadow-lg">
+    <h2 class="text-4xl font-extrabold text-center text-[#b25ea3] mb-10 font-montserrat">🌸 Health Tips for Your Period</h2>
+
+    <div class="space-y-6 max-w-2xl mx-auto">
+
+        <!-- Tip 1 -->
+        <div class="bg-[#ffe8f0] border-l-8 border-[#ff6f91] rounded-xl p-5 shadow-sm hover:shadow-md transition-all">
+            <h3 class="text-xl font-semibold text-[#a23d68]">🍽️ Eat Iron-rich Foods</h3>
+            <p class="text-gray-700 mt-2 text-sm">Include spinach, lentils, and jaggery in your meals. They help reduce tiredness and increase strength during your cycle.</p>
+        </div>
+
+        <!-- Tip 2 -->
+        <div class="bg-[#e5f6ff] border-l-8 border-[#00bcd4] rounded-xl p-5 shadow-sm hover:shadow-md transition-all">
+            <h3 class="text-xl font-semibold text-[#007c91]">🧘 Gentle Movements</h3>
+            <p class="text-gray-700 mt-2 text-sm">Try simple yoga, light stretching, or even a short walk to ease cramps and boost mood.</p>
+        </div>
+
+        <!-- Tip 3 -->
+        <div class="bg-[#fef6e4] border-l-8 border-[#fca311] rounded-xl p-5 shadow-sm hover:shadow-md transition-all">
+            <h3 class="text-xl font-semibold text-[#cc8500]">💧 Stay Hydrated</h3>
+            <p class="text-gray-700 mt-2 text-sm">Drink 8–10 glasses of water daily. It helps reduce bloating and improves digestion.</p>
+        </div>
+
+        <!-- Tip 4 -->
+        <div class="bg-[#e8f5e9] border-l-8 border-[#66bb6a] rounded-xl p-5 shadow-sm hover:shadow-md transition-all">
+            <h3 class="text-xl font-semibold text-[#388e3c]">😴 Prioritize Rest</h3>
+            <p class="text-gray-700 mt-2 text-sm">Getting 7–8 hours of sleep balances hormones and helps your body recover during your period.</p>
+        </div>
+
+        <!-- Tip 5 -->
+        <div class="bg-[#ede7f6] border-l-8 border-[#7e57c2] rounded-xl p-5 shadow-sm hover:shadow-md transition-all">
+            <h3 class="text-xl font-semibold text-[#5e35b1]">🌿 Avoid Stress</h3>
+            <p class="text-gray-700 mt-2 text-sm">Relax through breathing, storytelling, or light music. A calm mind makes the cycle smoother.</p>
+        </div>
+
+    </div>
+</section>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function calculateNextPeriod() {
+        const lastPeriodInput = document.getElementById('lastPeriod');
+        const resultElement = document.getElementById('result');
+        
+        if (!lastPeriodInput.value) {
+            resultElement.textContent = "Please enter your last period date.";
+            return;
+        }
+        
+        // Parse the date
+        const lastPeriod = new Date(lastPeriodInput.value);
+        
+        // Calculate next period (assuming 28-day cycle)
+        const nextPeriod = new Date(lastPeriod);
+        nextPeriod.setDate(lastPeriod.getDate() + 28);
+        
+        // Format the date
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const formattedDate = nextPeriod.toLocaleDateString('en-US', options);
+        
+        // Calculate fertile window (typically days 11-17 of cycle)
+        const fertileStart = new Date(lastPeriod);
+        fertileStart.setDate(lastPeriod.getDate() + 11);
+        
+        const fertileEnd = new Date(lastPeriod);
+        fertileEnd.setDate(lastPeriod.getDate() + 17);
+        
+        const formattedFertileStart = fertileStart.toLocaleDateString('en-US', options);
+        const formattedFertileEnd = fertileEnd.toLocaleDateString('en-US', options);
+        
+        // Display results
+        resultElement.innerHTML = `
+            <div class="font-semibold mb-2">Your next period is expected to start on: <span class="text-accent">${formattedDate}</span></div>
+            <div class="font-semibold">Your fertile window is approximately: <span class="text-primary">${formattedFertileStart}</span> to <span class="text-primary">${formattedFertileEnd}</span></div>
+        `;
+    }
+</script>
+{% endblock %}

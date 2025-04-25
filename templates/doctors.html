@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block title %}Find a Doctor - SheWell{% endblock %}
+
+{% block content %}
+<div class="my-12">
+    <h1 class="text-3xl font-montserrat font-bold mb-2">Find a Doctor</h1>
+    <p class="text-gray-600 mb-8">Book an appointment with an experienced gynecologist</p>
+    
+    <div class="bg-white p-6 rounded-xl shadow-md mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+                <label class="block text-gray-700 mb-2" for="specialization">Specialization</label>
+                <select id="specialization" class="w-full p-3 border border-gray-300 rounded-lg">
+                    <option value="">All Specializations</option>
+                    <option value="Obstetrics">Obstetrics</option>
+                    <option value="Gynecology">Gynecology</option>
+                    <option value="Maternal-Fetal Medicine">Maternal-Fetal Medicine</option>
+                    <option value="Reproductive Endocrinology">Reproductive Endocrinology</option>
+                </select>
+            </div>
+            
+            <div>
+                <label class="block text-gray-700 mb-2" for="available-day">Available Day</label>
+                <select id="available-day" class="w-full p-3 border border-gray-300 rounded-lg">
+                    <option value="">Any Day</option>
+                    <option value="Monday">Monday</option>
+                    <option value="Tuesday">Tuesday</option>
+                    <option value="Wednesday">Wednesday</option>
+                    <option value="Thursday">Thursday</option>
+                    <option value="Friday">Friday</option>
+                    <option value="Saturday">Saturday</option>
+                    <option value="Sunday">Sunday</option>
+                </select>
+            </div>
+            
+            <div>
+                <label class="block text-gray-700 mb-2" for="experience">Min. Experience</label>
+                <select id="experience" class="w-full p-3 border border-gray-300 rounded-lg">
+                    <option value="0">Any Experience</option>
+                    <option value="5">5+ Years</option>
+                    <option value="10">10+ Years</option>
+                    <option value="15">15+ Years</option>
+                    <option value="20">20+ Years</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="doctors-container">
+        {% for doctor in doctors %}
+            <div class="bg-white p-6 rounded-xl shadow-md doctor-card" 
+                 data-specialization="{{ doctor.specialization }}"
+                 data-experience="{{ doctor.experience }}"
+                 data-days="{{ doctor.available_days }}">
+                <div class="flex items-start">
+                    <div class="bg-primary rounded-full h-16 w-16 flex items-center justify-center mr-4">
+                        <span class="text-white text-xl">{{ doctor.name[:1] }}</span>
+                    </div>
+                    <div class="flex-1">
+                        <h2 class="text-xl font-montserrat font-semibold">Dr. {{ doctor.name }}</h2>
+                        <p class="text-primary">{{ doctor.specialization }}</p>
+                        <div class="flex items-center my-2">
+                            <span class="text-gray-600 mr-4">{{ doctor.experience }} Years Experience</span>
+                            <span class="bg-secondary bg-opacity-30 px-2 py-1 rounded-full text-xs">Available {{ doctor.available_days }}</span>
+                        </div>
+                        
+                        <a href="{{ url_for('book_appointment', doctor_id=doctor.id) }}" 
+                           class="mt-4 inline-block px-4 py-2 bg-accent text-white rounded-lg hover:bg-opacity-90 transition">
+                            Book Appointment
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    
+    {% if not doctors %}
+        <div class="bg-white p-6 rounded-xl shadow-md text-center">
+            <p class="text-gray-600">No doctors found. Please check back later.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const specializationFilter = document.getElementById('specialization');
+        const dayFilter = document.getElementById('available-day');
+        const experienceFilter = document.getElementById('experience');
+        const doctorCards = document.querySelectorAll('.doctor-card');
+        
+        function filterDoctors() {
+            const specialization = specializationFilter.value;
+            const day = dayFilter.value;
+            const minExperience = parseInt(experienceFilter.value);
+            
+            doctorCards.forEach(card => {
+                const doctorSpec = card.dataset.specialization;
+                const doctorExp = parseInt(card.dataset.experience);
+                const doctorDays = card.dataset.days;
+                
+                let showCard = true;
+                
+                if (specialization && doctorSpec !== specialization) {
+                    showCard = false;
+                }
+                
+                if (day && !doctorDays.includes(day)) {
+                    showCard = false;
+                }
+
+                if (minExperience && doctorExp < minExperience) {
+                    showCard = false;
+                }
+
+                if (showCard) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        specializationFilter.addEventListener('change', filterDoctors);
+        dayFilter.addEventListener('change', filterDoctors);
+        experienceFilter.addEventListener('change', filterDoctors);
+    });
+</script>
+{% endblock %}

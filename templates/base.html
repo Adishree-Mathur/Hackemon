@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SheWell - Care for Every Step{% endblock %}</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#b9a5cb',
+                        secondary: '#c3e8bd',
+                        accent: '#ff8c69',
+                        background: '#faf7f2',
+                        text: '#3a243b',
+                    },
+                    fontFamily: {
+                        'montserrat': ['Montserrat', 'sans-serif'],
+                        'opensans': ['Open Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: #faf7f2;
+            color: #3a243b;
+        }
+
+        .font-montserrat {
+            font-family: 'Montserrat', sans-serif;
+        }
+    </style>
+    {% block styles %}{% endblock %}
+</head>
+
+<body> 
+    <div class="container max-w-6xl mx-auto px-4">
+        <nav class="flex justify-between items-center py-6">
+            <a href="{{ url_for('home') }}" class="text-2xl font-montserrat font-bold">
+                She<span class="text-accent">Well</span>
+            </a>
+            <div class="hidden md:flex space-x-8">
+                <a href="{{ url_for('home') }}" class="font-semibold hover:text-accent transition">Home</a>
+                {% if session.get('user_id') and session.get('user_type') == 'patient' %}
+                    <a href="{{ url_for('doctors') }}" class="font-semibold hover:text-accent transition">Doctors</a>
+                    <a href="{{ url_for('chatbot') }}" class="font-semibold hover:text-accent transition">Chatbot</a>
+                {% endif %}
+                <a href="{{ url_for('periods') }}" class="font-semibold hover:text-accent transition">Periods</a>
+                <a href="{{ url_for('mental_health') }}"class="font-semibold hover:text-accent transition">Mental Health</a>
+
+                <a href="{{ url_for('reels') }}" class="font-semibold hover:text-accent transition">Reels</a>
+
+                <a href="{{ url_for('about') }}"class="font-semibold hover:text-accent transition">About</a>
+
+            </div>
+            <div class="space-x-2">
+                {% if session.get('user_id') %}
+                    <a href="{{ url_for('dashboard') }}"
+                        class="px-4 py-2 rounded-full bg-primary text-white font-semibold hover:bg-opacity-80 transition">Dashboard</a>
+                    <a href="{{ url_for('logout') }}"
+                        class="px-4 py-2 rounded-full bg-accent text-white font-semibold hover:bg-opacity-80 transition">Logout</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}"
+                        class="px-4 py-2 rounded-full bg-primary text-white font-semibold hover:bg-opacity-80 transition">Login</a>
+                    <a href="{{ url_for('register') }}"
+                        class="px-4 py-2 rounded-full bg-accent text-white font-semibold hover:bg-opacity-80 transition">Register</a>
+                {% endif %}
+            </div>
+        </nav>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div
+            class="my-4 p-4 rounded-lg {% if category == 'error' %}bg-red-100 text-red-700{% elif category == 'success' %}bg-green-100 text-green-700{% else %}bg-blue-100 text-blue-700{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer class="bg-primary text-white mt-20 py-10">
+        <div class="container max-w-6xl mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between">
+                <div class="mb-6 md:mb-0 md:w-1/3 pr-8">
+                    <h3 class="text-xl font-montserrat font-semibold mb-4">SheWell</h3>
+                    <p>Supporting women through every step of their pregnancy journey.</p>
+                </div>
+                <div class="mb-6 md:mb-0 md:w-1/3">
+                    <h3 class="text-xl font-montserrat font-semibold mb-4">Quick Links</h3>
+                    <p class="mb-2"><a
+                            href="{{ url_for('doctors') if session.get('user_id') and session.get('user_type') == 'patient' else url_for('register') }}"
+                            class="hover:underline">Find a Doctor</a></p>
+                    <p class="mb-2"><a
+                            href="{{ url_for('chatbot') if session.get('user_id') and session.get('user_type') == 'patient' else url_for('register') }}"
+                            class="hover:underline">Ask the Chatbot</a></p>
+                    <p class="mb-2"><a href="{{ url_for('dashboard') if session.get('user_id') else url_for('login') }}"
+                            class="hover:underline">My Appointments</a></p>
+                </div>
+                <div class="md:w-1/3">
+                    <h3 class="text-xl font-montserrat font-semibold mb-4">Contact</h3>
+                    <p class="mb-2">Email: info@shewell.com</p>
+                    <p class="mb-2">Phone: (555) 123-4567</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    {% block scripts %}{% endblock %}
+</body>
+
+</html>

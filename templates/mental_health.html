@@ -1,0 +1,35 @@
+
+{% extends 'base.html' %}
+{% block title %}Mental Health Tips - SheWell{% endblock %}
+
+{% block content %}
+    <div class="container max-w-6xl mx-auto px-4 mt-10">
+        <h1 class="text-3xl font-montserrat font-semibold text-primary">🧘 Welcome to Your Calm Corner</h1>
+        <p class="mt-4 text-lg">You’re not alone. Take a deep breath — you're doing amazing. Here are some gentle ways to feel better:</p>
+
+        <div class="mt-8">
+            <h2 class="text-2xl font-montserrat font-semibold text-primary">🌿 Tips to Reduce Stress</h2>
+            <ul class="list-disc pl-5 mt-4">
+                <li>Go for a short walk and feel the air on your skin</li>
+                <li>Drink a glass of water slowly, mindfully</li>
+                <li>Put on your favorite calming playlist</li>
+                <li>Talk to a close friend or write down your thoughts</li>
+                <li>Take a 10-minute digital detox</li>
+            </ul>
+        </div>
+
+        <div class="mt-8">
+            <h2 class="text-2xl font-montserrat font-semibold text-primary">🌀 Quick Exercises</h2>
+            <ul class="list-disc pl-5 mt-4">
+                <li><strong>4-7-8 Breathing:</strong> Inhale 4 sec, hold 7 sec, exhale 8 sec</li>
+                <li><strong>5-4-3-2-1 Technique:</strong> Ground yourself using your senses</li>
+                <li><strong>Stretch & Shake:</strong> Loosen up tension in shoulders and neck</li>
+            </ul>
+        </div>
+
+        <div class="mt-8 p-4 bg-blue-50 border-l-4 border-primary">
+            <p class="font-italic text-primary">💬 Quote of the Moment:</p>
+            <p class="mt-2 text-lg font-semibold">"{{ quote }}"</p>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,7 @@
+Flask
+Flask-SQLAlchemy
+Werkzeug
+twilio
+dotenv
+google-generativeai
+deep-translator
