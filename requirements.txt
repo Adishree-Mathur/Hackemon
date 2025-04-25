@@ -2,6 +2,10 @@ Flask
 Flask-SQLAlchemy
 Werkzeug
 twilio
-dotenv
+python-dotenv
 google-generativeai
 deep-translator
+gunicorn
+Flask-Migrate
+SQLAlchemy
+alembic
